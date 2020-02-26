@@ -1,7 +1,13 @@
 import os, os.path
 import requests
 
+
+# Define system paths and other configuration related variables #
+vlc = "/usr/bin/vlc"
+
+# init session for rest api #
 s = requests.Session()
+
 
 """ 
 POST to API 
@@ -91,6 +97,16 @@ def getMac(interface):
     else:
         return False
 
+def setVLC(status):
+    if os.path.exists(vlc):
+        if status is "enable":
+            os.system("sudo chmod 755 " + vlc)
+        elif status is "disable":
+            os.system("sudo chmod 400 " + vlc)
+    else:
+        print("VLC is not installed at " + vlc)
+
+
 """ Start the script logic here """
 
 """ Get the userid and password from the end user """
@@ -104,8 +120,8 @@ else:
     username = input("Enter the user id: ")
     password = input("Enter the password: ")
 
-""" Try wlan0 first if it does not exist then eth1 """
-mac = getMac("wlan0")
+""" Try eth0 first if it does not exist then eth1 """
+mac = getMac("eth0")
 if mac is False:
     mac = getMac("eth1")
     if mac is False:
@@ -175,20 +191,51 @@ if 'user_id' in auth_response:
 
     # Configure sshd #
     ssh_path = "/etc/ssh/sshd_config"
-    ssh_allowpw = "\nPasswordAuthenication yes"
-    ssh_allowroot = "\nPermitRootLogin yes"
-   
-   # Only needed for dev testing #
+    ssh_allowpw = "PasswordAuthentication"
+    ssh_allowroot = "PermitRootLogin"
+
+    # Only needed for dev testing #
     if os.path.exists(ssh_path):
-        sshd_config = open(ssh_path,"a")
-        #sshd_config.write("\nPort " + str(username))
-        sshd_config.write(ssh_allowpw + ssh_allowroot)
+        sshd_config = open(ssh_path,"r")
+        sshd_text = sshd_config.read()
+        if re.search(ssh_allowpw + " no", sshd_text):
+            print("match")
+            sshd_replace = re.sub(ssh_allowpw + " no",ssh_allowpw + " yes" ,sshd_text)
+        elif re.search(ssh_allowpw, sshd_text) is None:
+            sshd_replace = sshd_text + "\n" + ssh_allowpw + " yes\n"
+        if re.search(ssh_allowroot,sshd_text):
+            print("match2")
+            sshd_replace = re.sub("#" + ssh_allowroot + " prohibit-password",ssh_allowroot + " yes",sshd_replace)
+        else:
+            sshd_replace = sshd_replace + "\n" + ssh_allowroot + " yes\n"
+        print(sshd_replace)
         sshd_config.close()
+        sshd_config = open(ssh_path,"w+")
+        #sshd_config.write("\nPort " + str(username))
+        #sshd_config.write(ssh_allowpw + ssh_allowroot)
+        sshd_config.write(sshd_replace)
+        sshd_config.close()
+
         # restart ssh service to use new port #
         if os.system("systemctl restart sshd"):
             print("Restarted SSH Service with new config")
-    # initiate reverse ssh tunnel script and set cron #
-    os.system("./tun " + str(device_response['user_id']) + "&")
+    # initiate reverse ssh tunnel script, reg and start service #
+#    os.system("./tun " + str(device_response['user_id']) + "&")
+            autossh = "autossh-svc"
+            service_cmd = "ExecStart=/usr/bin/autossh -M 0 -o 'ServerAliveInterval 30' -o 'ServerAliveCountMax 3' -R " + str(device_response['user_id']) + ":localhost:22 -i LightsailDefaultKey-us-east-1.pem bitnami@54.221.143.11"
+            autossh_conf = open(auto_ssh,"r")
+            autossh_text = autossh_conf.read()
+            if re.search("ExecStart=/usr/bin/autossh",autossh_text):
+                re.sub("ExecStart=/usr/bin/autossh",service_cmd,autossh_text)
+            autossh_conf.close()
+            autossh_conf = open(auto_ssh,"w+")
+            autossh_conf.write(autossh_text)
+            autossh_conf.close()
+            os.system("sudo cp autossh-svc /etc/systemd/system/autossh-svc.service")
+            os.system("sudo systemctl daemon-reload")
+            os.system("sudo systemctl enable autossh-svc")
+            if os.system("sudo systemctl start autossh-svc"):
+                print("Auto SSH started")
     new_cron = open("cronfile","w+")
     new_cron.write("* 12 * * * sudo /usr/bin/python3 api.py\n")
     new_cron.close()
