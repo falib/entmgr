@@ -221,15 +221,19 @@ if 'user_id' in auth_response:
     # initiate reverse ssh tunnel script, reg and start service #
 #    os.system("./tun " + str(device_response['user_id']) + "&")
         autossh = "autossh-svc"
-        service_cmd = "ExecStart=/usr/bin/autossh -M 0 -o 'ServerAliveInterval 30' -o 'ServerAliveCountMax 3' -R " + str(device_response['user_id']) + ":localhost:22 -i LightsailDefaultKey-us-east-1.pem bitnami@54.221.143.11"
+        service_cmd = "ExecStart=/usr/bin/autossh -M 0 -o 'ServerAliveInterval 30' -o 'ServerAliveCountMax 3' -o 'UserKnownHostsFile=/dev/null' -o 'StrictHostKeyChecking=no' -TN -R" + str(device_response['user_id']) + ":localhost:22 -i /home/ubuntu/LightsailDefaultKey-us-east-1.pem bitnami@54.221.143.11"
         autossh_conf = open(autossh,"r")
         autossh_text = autossh_conf.read()
-        if re.search("ExecStart=/usr/bin/autossh",autossh_text):
-            re.sub("ExecStart=/usr/bin/autossh",service_cmd,autossh_text)
+        if re.search('ExecStart.*',autossh_text):
+            print("Found ExecStart")
+            autossh_text = re.sub('ExecStart.*',service_cmd,autossh_text)
         autossh_conf.close()
         autossh_conf = open(autossh,"w+")
         autossh_conf.write(autossh_text)
         autossh_conf.close()
+        # If autossh already exists then stop the service first #
+        if os.path.exists("/etc/systemd/system/autossh-svc.service"):
+            os.system("sudo systemctl stop autossh-svc")
         os.system("sudo cp autossh-svc /etc/systemd/system/autossh-svc.service")
         os.system("sudo systemctl daemon-reload")
         os.system("sudo systemctl enable autossh-svc")
