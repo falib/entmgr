@@ -1,9 +1,7 @@
 <?php
 include "dbconn.php";
-include "globals.php";
 
 if($conn){
-
 	if(isset($_POST['username'],$_POST['password'])){
 		$user = $_POST['username'];
 		$pass = $_POST['password'];
@@ -17,8 +15,12 @@ if($conn){
 		}else
 			$message = "Please check your username or password and try again";
 
-	}else
+	}else{
 		$message = "Please Login";
+		if($_SESSION['user']){
+			header("Location: manage.php");
+		}
+	}
 }else{
 	$message = "Could not connect to the database";
 }

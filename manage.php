@@ -50,7 +50,28 @@ foreach($results as $result){
 }
 
 ?>
-<body>
+
+<div id="show_devices" style="width:60%;padding:2%">
+<table class="table">
+<thead><tr><th>UserID</th><th>Points Quota</th><th> Period </th><th>Status</th><th> Edit</th></tr></thead>
+<?php
+if($conn){
+        $dev_sql = "SELECT * from device";
+        $dev_query = $conn->query($dev_sql);
+        $devices = $dev_query->fetchAll(PDO::FETCH_ASSOC);
+        foreach($devices as $device){
+                echo "<tr><td>" . $device['user_id'] . "</td>" .
+		"<td> " . $device['points_quota'] . "</td>" .
+		"<td> " . $device['period'] . "</td>" .
+		"<td> " . $device['status'] . "</td>" .
+		"<td><button id='" . $device['user_id'] . "' class='btn btn-light'> <a href='deviceedit.php?userid=" . $device['user_id'] . "'>Edit</a> </button></td>" .
+		"</tr>";
+        }
+}
+?>
+</table>
+</div>
+
 <div id="show_user" style="width: 60%;padding:2%">
 <table class="table">
 <thead><tr><th>UserID</th><th>Edit</th></tr></thead>

@@ -5,11 +5,14 @@ include "globals.php";
 if(isset($_POST['submit'])){
 	if($conn){
 		if(isset($_GET['userid'])){
-			$pw_sql = "UPDATE users SET password = ? WHERE user_id = " . $_GET['userid'];
+			$pw_sql = "UPDATE users SET `password` = :password WHERE `user_id` = :user_id";
 			$pq_query = $conn->prepare($pw_sql);
-			if($pq_query->execute(md5($_POST['password']))){
-				echo $_POST['userid'] . " was updated successfully";
-			}
+			$values['password'] = md5($_POST['password']);
+			$values['user_id'] = $_GET['userid'];
+			if($pq_query->execute($values)){
+				echo $_GET['userid'] . " was updated successfully";
+			}else
+				echo "Error";
 		}else
 			echo "Something went wrong or no ID selected";
 	}else
