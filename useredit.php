@@ -18,7 +18,7 @@ if(isset($_POST['submit'])){
 	}else
 		echo "Something went wrong with the database connection";
 }else
-	echo "<h6 class='bg-success text-center'> Please enter the new password and click the Apply button </h6>";
+	echo "<div class='bg-info text-center jumbotron'><h4> Please enter the new password and click the Apply button</h4> </div>";
 
 if(isset($_GET['userid'])){
 	if($conn){

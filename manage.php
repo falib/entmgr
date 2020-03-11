@@ -35,7 +35,7 @@ if(isset($_POST['userid']) && isset($_POST['password'])){
 		}
 	}
 }
-echo "<h2> Welcome Admin " . $_SESSION['user'] .  "</h2>";
+echo "<div class='jumbotron text-center bg-info'><h4> Welcome <span class='text-uppercase'>" . $_SESSION['user'] .  "</span></h4></div>";
 
 $options = "";
 if($conn){
@@ -50,21 +50,27 @@ foreach($results as $result){
 }
 
 ?>
-
-<div id="show_devices" style="width:60%;padding:2%">
-<table class="table">
-<thead><tr><th>UserID</th><th>Points Quota</th><th> Period </th><th>Status</th><th> Edit</th></tr></thead>
+<div class="row mt-2">
+<div id="show_devices" style="padding:2%" class="col-md-7 card">
+<h3 class="card-header"> Devices </h3>
+<table class="table card-body">
+<thead><tr><th> Device ID </th><th>UserID</th><th>Points Quota</th><th> Mac Address</th><th> Period </th><th>Status</th><th>SSH Port</th><th>SSH User</th><th>SSH Password</th><th> Edit</th></tr></thead>
 <?php
 if($conn){
         $dev_sql = "SELECT * from device";
         $dev_query = $conn->query($dev_sql);
         $devices = $dev_query->fetchAll(PDO::FETCH_ASSOC);
         foreach($devices as $device){
-                echo "<tr><td>" . $device['user_id'] . "</td>" .
+                echo "<tr><td>" . $device['id'] . "</td>" .
+		"<td>" . $device['user_id'] . "</td>" .
 		"<td> " . $device['points_quota'] . "</td>" .
+		"<td>" . $device['mac_address'] . "</td>" .
 		"<td> " . $device['period'] . "</td>" .
 		"<td> " . $device['status'] . "</td>" .
-		"<td><button id='" . $device['user_id'] . "' class='btn btn-light'> <a href='deviceedit.php?userid=" . $device['user_id'] . "'>Edit</a> </button></td>" .
+		"<td> " . $device['sshport'] . "</td>" .
+		"<td> " . $device['sshuser'] . "</td>" .
+		"<td> " . $device['sshpass'] . "</td>" .
+		"<td><button id='" . $device['id'] . "' class='btn btn-light'> <a href='deviceedit.php?device_id=" . $device['id'] . "'>Edit</a> </button></td>" .
 		"</tr>";
         }
 }
@@ -72,8 +78,9 @@ if($conn){
 </table>
 </div>
 
-<div id="show_user" style="width: 60%;padding:2%">
-<table class="table">
+<div id="show_user" style="padding:2%" class="offset-md-1 col-md-3 card mr-1">
+<h3 class="card-header"> Users </h3>
+<table class="table card-body">
 <thead><tr><th>UserID</th><th>Edit</th></tr></thead>
 <?php
 if($conn){
@@ -87,10 +94,11 @@ if($conn){
 ?>
 </table>
 </div>
-
-<div id="new_user" style="width: 60%;padding: 2%">
-<h3> New User </h3><br>
-<form id='add_user' method='POST' action='manage.php'>
+</div><!-- end row-->
+<div class="row mt-5">
+<div id="new_user" style="padding: 2%" class="card col-md-5">
+<h3 class="card-header"> New User </h3><br>
+<form id='add_user' method='POST' action='manage.php' class="card-body">
 	<div class="form-group">
 		<label for="userid"> UserID </label>
 		<input type="text" name="userid" id="userid" class="form-control" />
@@ -99,13 +107,15 @@ if($conn){
 		<label for="password"> Password </label>
 		<input type="password" name="password" id="password" class="form-control"/>
 	</div>
-	<input type="Submit" name="submit-user" id="Submit" value="Add User" class="btn btn-primary"/>
+	<div class="text-center">
+		<input type="Submit" name="submit-user" id="Submit" value="Add User" class="btn btn-primary"/>
+	</div>
 </form>
 </div>
 <br><br>
-<div id="new_device" style="width: 60%;padding: 2%">
-<h3> New Device </h3><br>
-<form id='add_device' method='POST' action='manage.php'>
+<div id="new_device" style="padding: 2%" class="offset-md-1 card col-md-5">
+<h3 class="card-header"> New Device </h3><br>
+<form id='add_device' method='POST' action='manage.php' class='card-body'>
         <div class="form-group">
 		<label for="user"> UserID </label>
         	<select id="user" name="user" class="form-control">
@@ -124,10 +134,12 @@ if($conn){
 		<input type="checkbox" name="status" id="status" class="form-check-input">
 		<label for="status" class="form-check-label"> Enabled </label>
 	</div>
-	<input type="Submit" name="submit-device" id="Submit" value="Add Device" class="btn btn-primary" />
+	<div class="text-center">
+		<input type="Submit" name="submit-device" id="Submit" value="Add Device" class="btn btn-primary" />
+	</div>
 </form>
 </div>
-
+</div><!-- end row -->
 </body>
 </html>
 
