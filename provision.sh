@@ -1,7 +1,11 @@
 #!/bin/bash
-if sudo useradd $1; echo -e "$2\n$2" | passwd $1; then
-	printf "$1 was created successfully\n"
+output=`useradd $1; echo -e "$2\n$2" | sudo passwd $1`
+#echo $?
+#echo "henlo"
+if [ $? -eq "0" ]; then	
+	printf "TRUE,$1 was created successfully\n"
 else
+	echo $?
 	printf "Something went wrong\n"
 fi
 
