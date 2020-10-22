@@ -17,3 +17,6 @@ Installation Steps
 5. Once changes are saved, in the command line run <code>php createadmin.php</code>
 
 6. You can now browse to http://(your ip or domain)/index.php and you will be redirected to the login page.
+
+**** IMPORTANT ****
+ONCE LOGGED IN DELETE OR REMOVE THE Setup DIRECTORY FROM THE WEBROOT
