@@ -7,7 +7,7 @@ if(isset($_POST['submit'])){
 		if(isset($_GET['userid'])){
 			$pw_sql = "UPDATE users SET `password` = :password WHERE `user_id` = :user_id";
 			$pq_query = $conn->prepare($pw_sql);
-			$values['password'] = md5($_POST['password']);
+			$values['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 			$values['user_id'] = $_GET['userid'];
 			if($pq_query->execute($values)){
 				echo $_GET['userid'] . " was updated successfully";
@@ -22,7 +22,7 @@ if(isset($_POST['submit'])){
 
 if(isset($_GET['userid'])){
 	if($conn){
-		$sql = "SELECT * from users WHERE user_id=" . $_GET['userid'];
+		$sql = "SELECT * from users WHERE user_id='" . $_GET['userid'] ."'";
 		$query = $conn->query($sql);
 		$results = $query->fetch(PDO::FETCH_ASSOC);
 			

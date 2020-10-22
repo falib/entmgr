@@ -4,8 +4,8 @@ include "dbconn.php";
 if($conn){
 	if(isset($_POST['username'],$_POST['password'])){
 		$user = $_POST['username'];
-		$pass = $_POST['password'];
-		$query = $conn->query("SELECT * from users WHERE user_id ='$user' and password=md5('$pass') LIMIT 1");
+		$pass = password_hash($_POST['password'],PASSWORD_DEFAULT);
+		$query = $conn->query("SELECT * from users WHERE user_id ='$user' and password=$pass LIMIT 1");
 		$auth = $query->fetch();
 		if($auth){
 			echo "hi $user";	
