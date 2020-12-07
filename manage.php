@@ -14,8 +14,9 @@ if(isset($_POST['submit-device'])){
 		$values1['points_quota'] = $_POST['points_quota'];
 		$values1['period'] = $_POST['period'];
 		$values1['status'] = ($_POST['status'] == "on") ? 1 : 0;
+		$values1['createssh'] = 0; //defaults to false, set true by polling script in cron
 		if($conn){
-			$insert1 = "INSERT INTO device (user_id,points_quota,period,status) VALUES(:userid,:points_quota,:period,:status)";
+			$insert1 = "INSERT INTO device (user_id,points_quota,period,status,createssh) VALUES(:userid,:points_quota,:period,:status,:createssh)";
 			$add1 = $conn->prepare($insert1);
 			if($add1->execute($values1)==TRUE){
 				echo "Device for " . $values['userid'] . " added successfully";
@@ -26,7 +27,7 @@ if(isset($_POST['submit-device'])){
 
 if(isset($_POST['userid']) && isset($_POST['password'])){
 	$values['userid'] = $_POST['userid'];
-	$values['password'] = md5($_POST['password']);
+	$values['password'] = password_hash($_POST['password'],PASSWORD_DEFAULT);
 	if($conn){
 		$insert = "INSERT INTO users (user_id,password) VALUES(:userid,:password)";
 		$add = $conn->prepare($insert);

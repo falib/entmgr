@@ -18,7 +18,7 @@ global $conn;
 		//add a few numbers
 		$ssh['port'] = $userid . "1";		
 	}elseif($userid > 9000){
-		$ssh['port'] = $userid
+		$ssh['port'] = $userid;
 	}
 	if($conn){
 		$sql = "UPDATE device set `sshuser`=" . $ssh['user'] . ",`sshpass`=" . $ssh['pass'] . ", `sshport`=" . $ssh['port'] . " WHERE user_id=" . $userid;

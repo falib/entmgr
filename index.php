@@ -4,14 +4,17 @@ include "dbconn.php";
 if($conn){
 	if(isset($_POST['username'],$_POST['password'])){
 		$user = $_POST['username'];
-		$pass = password_hash($_POST['password'],PASSWORD_DEFAULT);
-		$query = $conn->query("SELECT * from users WHERE user_id ='$user' and password=$pass LIMIT 1");
-		$auth = $query->fetch();
+		$pass = $_POST['password'];
+		$query = $conn->query("SELECT * from users WHERE user_id ='$user' LIMIT 1");
+		$auth = $query->fetch(PDO::FETCH_ASSOC);
+		
 		if($auth){
-			echo "hi $user";	
-			$_SESSION['user'] = $user;
-			header("Location: manage.php");
-			
+			if(password_verify($pass,$auth['password'])){
+
+				echo "hi $user";	
+				$_SESSION['user'] = $user;
+				header("Location: manage.php");
+			}				
 		}else
 			$message = "Please check your username or password and try again";
 
