@@ -1,9 +1,9 @@
 # entmgr
 
-Requirements
+# Requirements 
 + Apache / Nginx, PHP 7, MySQL
 
-Installation Steps
+# Installation Steps
 
 1. After your apache installation extract the files you downloaded or, clone the repo into the web root
 
@@ -17,6 +17,18 @@ Installation Steps
 5. Once changes are saved, in the command line run <code>php createadmin.php</code>
 
 6. You can now browse to http://(your ip or domain)/index.php and you will be redirected to the login page.
+
+# Setup Crud API
+1. Copy the api folder and setup a separate webroot
+2. In api.php edit the config array
+   <code> $config = new Config([
+        'username' => 'dbuser',
+        'password' => 'dbpass',
+        'database' => 'entmgr'
+        'drive'    => 'mysql'
+        'address'  => 'localhost'
+    ]);
+</code>
 
 **** IMPORTANT ****
 ONCE LOGGED IN DELETE OR REMOVE THE Setup DIRECTORY FROM THE WEBROOT
