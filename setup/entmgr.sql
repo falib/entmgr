@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 22, 2020 at 02:43 PM
+-- Generation Time: Dec 06, 2020 at 09:44 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.3.11
 
@@ -21,8 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `entmgr`
 --
-CREATE DATABASE IF NOT EXISTS `entmgr` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `entmgr`;
 
 -- --------------------------------------------------------
 
@@ -43,6 +41,15 @@ CREATE TABLE `device` (
   `createssh` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `device`
+--
+
+INSERT INTO `device` (`id`, `user_id`, `mac_address`, `points_quota`, `period`, `status`, `sshport`, `sshuser`, `sshpass`, `createssh`) VALUES
+(3, '1234', 0, 200, '2020-03-11', 1, 1234, '1234001', '1234001111', 1),
+(4, '12345', 0, 800, '2020-03-03', 1, 0, '12345001', '12345001111', 1),
+(6, '123456', NULL, 1200, '2020-12-31', 1, 123456, '123456001', '123456001111', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -51,8 +58,20 @@ CREATE TABLE `device` (
 
 CREATE TABLE `users` (
   `user_id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(100) COLLATE utf8mb4_general_ci NOT NULL
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`user_id`, `password`) VALUES
+('1234', '$2y$10$5WXz.0701Dh.qVkYDHApAOyVJFbYyDoUJq86.KwgZrL4Mkf72KuQu'),
+('12345', '$2y$10$oVmW6OKqNKjFLA.7TpKnj.wpgAR/1DFoj8JexNjeRvXyqqtSgm24S'),
+('123456', '$2y$10$25Tvjk6Ga2WlFq7C0uZ.9OvQMJIv/winmapArhMQI72DbYA.md4Um'),
+('saadmin', '$2y$10$g/YH/ZxkU331vmwmVJtSse2uja./Ti1evEESzLaum8X0FvCc6tSRi'),
+('sadmin', '$2y$10$NwVO/dbacSXeh6O0aeThZODb8SlCwxAAXGvfUZfL0Ah8xWJ9aeqDS'),
+('twenty', '$2y$10$JlsSs4tn5AFEkvTzpOtWh.Ur45My6OmoAlGVaB/mTQ2GoLJOL5fS.');
 
 --
 -- Indexes for dumped tables
@@ -79,7 +98,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `device`
 --
 ALTER TABLE `device`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables
