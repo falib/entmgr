@@ -23,11 +23,13 @@
 
 2. Edit the create_users.php file and set $filepath variable to the absolute path of provision.sh 
 
-e.g /home/root/scripts/provision.sh
+   e.g /home/root/scripts/provision.sh
 
 3. Setup the cron to run create_users.php every 1 minute e.g
 
-<code>*/1 * * * * /opt/bitnami/php/bin/php /home/root/scripts/create_users.php</code>
+   <code>*/1 * * * * /opt/bitnami/php/bin/php /home/root/scripts/create_users.php</code>
+
+4. Please delete create_users.php and provision.sh from the webroot.
 
 ## Setup Crud API
 1. Copy the api folder and setup a separate webroot
